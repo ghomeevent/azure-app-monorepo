@@ -13,11 +13,30 @@ java {
     }
 }
 
+// write a task that runs before build will execute gradlew npm_run_build
+
+tasks.register('npmRunBuild', Exec) {
+//    workingDir 'app-ui'
+    commandLine './gradlew','npm_run_build'
+}
+
+tasks.named('build') {
+    dependsOn tasks.named('npmRunBuild')
+}
+
+
 repositories {
     mavenCentral()
+    processResources {
+        from('app-ui/build') {
+            into 'public'
+        }
+    }
 }
 
 dependencies {
+    // add lombok
+    implementation 'org.projectlombok:lombok'
     implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
